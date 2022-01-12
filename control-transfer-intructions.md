@@ -23,67 +23,67 @@ BACK: ...
 
 เป็นแบบมีเงื่อนไข (conditional transfer) และไม่มีผลต่อ flags
 
-### JA
+## JA
 "jump if above" มากกว่า
 
 format `JA label`
 
-### JNBE
+## JNBE
 "jump if not below nor equal" ไม่น้อยกว่าเท่ากับ
 
 format `JNBE label`
 
-### JAE
+## JAE
 "jump if above or equal" มากกว่าหรือเท่ากับ
 
 format `JAE label`
 
-### JNB
+## JNB
 "jump if not below" ไม่น้อยกว่า
 
 format `JNB label`
 
-### JB
+## JB
 "jump if below" มากกว่า
 
 format `JB lable`
 
-### JNAE
+## JNAE
 "jump if not above or equal" ไม่มากกว่าเท่ากับ
 
 format `JNAE label`
 
-### JC
+## JC
 "jump if carray" ถ้า CF=1
 
 format `JC label`
 
-### JNC
+## JNC
 "jump if not carry" ถ้า CF=0
 
 format `JNC label`
 
-### JBE
+## JBE
 "jump if below or equal" ถ้า C=1 or ZF=1
 
 format `JBE label`
 
-### JNA
+## JNA
 "jump if not above" ถ้า C=1 or ZF=1
 
 format `JNA label`
 
-### JCXZ
+## JCXZ
 "jump if CX is zero" ถ้า CX=0
 
 format `JCXZ label`
 
-### JE
+## JE
 "jump if equal" ถ้า ZF=1
 
 format `JE label`
 
-### JZ
+## JZ
 "jump if zero" ถ้า ZF=1
 
 format `JZ label`
