@@ -4,7 +4,7 @@
 
 ## JMP
 
-เป็นแบบไม่มีเงื่นไข (unconditional transfer) และไม่มีผลต่อ flags
+เป็นแบบไม่มีเงื่อนไข (unconditional transfer) และไม่มีผลต่อ flags
 
 format `JMP label`
 
@@ -14,14 +14,14 @@ JMP NEXT
 NEXT: ...
 ```
 
-```aseembly
+```assembly
 BACK: ...
       ...
       JMP BACK
 ```
 ## Conditional Transfer
 
-เป็นแบบมีเงื่ยนไข (conditional transfer) และไม่มีผลต่อ flags
+เป็นแบบมีเงื่อนไข (conditional transfer) และไม่มีผลต่อ flags
 
 ### JA
 "jump if above" มากกว่า
