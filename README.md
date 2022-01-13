@@ -1,22 +1,27 @@
 # ASM
+Assembly Language
 
-Content
+## Register
 
-[Register](ASM%20517b6b565be14944823217be2eb62014/Register%204a32276b12e64566a0a6b8c4d008a9ce.md)
+[Register](register.md)
 
-[Internal Units and Bus Unit](ASM%20517b6b565be14944823217be2eb62014/Internal%20Units%20and%20Bus%20Unit%201e0e5aa1834f4f1cb4949e7458a71016.md)
+## Units
 
-[Instruction](ASM%20517b6b565be14944823217be2eb62014/Instruction%20aa065a9caf6a4fbcb8e4e2a01c397f02.md)
+[Internal Units and Bus Unit](internal-units.md)
 
-[Directive](ASM%20517b6b565be14944823217be2eb62014/Directive%20b82ba5c1e47446539817982c738781e3.md)
+## Intruction
 
-[Addressing Mode](ASM%20517b6b565be14944823217be2eb62014/Addressing%20Mode%2053a46008d6e84148b9cfc76caa15d22c.md)
+คำสั่งในภาษาแอสเซมบลี
 
-[Instruction Set](ASM%20517b6b565be14944823217be2eb62014/Instruction%20Set%20031628dbe197471283dac1d54c7a5ac2.md)
+[Instruction](instruction)
 
-[Arithmetic Instructions](ASM%20517b6b565be14944823217be2eb62014/Arithmetic%20Instructions%2031a7b6caa4484d1aa7a8eee1384ffad8.md)
+## Directive
 
-[control-transfer-intructions](ASM%20517b6b565be14944823217be2eb62014/control-transfer-intructions%20592853bcda8a4fde9bf7770c974ea071.md)
+[Directive](directive.md)
+
+## Addressing Mode
+
+[Addressing Mode](addressing-mode.md)
 
 ## Operator pointer
 
