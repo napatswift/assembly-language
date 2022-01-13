@@ -17,7 +17,7 @@ programmer *-assembly-lang-program→* assembler *-object-prog→* liker *-run-m
 - **Assembly language** เป็นคำสั่งของ processor ที่จะทำตอน execute
 - **Assembler directive** หรือ pseudo-operation เป็นคำสั่งของ assembler ที่ทำตอน assemble
 
-## constants
+## Constants
 
 ค่าคงที่ในภาษา
 
