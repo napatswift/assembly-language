@@ -16,7 +16,7 @@ format `[name]? (DB|DW|DD) expression[,expresion]*`
 
 การทำงาน จองเนื้อที่ในความจำโดย `name` เรียกว่าเป็น symbolic reference และสามารถจองโดยให้ค่าเริ่มต้น หรือไม่ให้ก็ได้
 
-```wasm
+```asm
 ;byte
 BU_MAX DB 255    ;max unsigned
 BS_MAX DB 127    ;max signed
@@ -30,20 +30,20 @@ WS_MIN DW -32768 ;min signed
 
 1. กรณีการให้ค่าเริ่มต้นมากกว่า 1 ค่า ให้คั่นแต่ละค่าด้วย `,` และจะเรียกว่าเป็น  table
 
-```wasm
+```asm
 B_TAB DB 0,1,2,3     ;byte talbe using 4 bytes
 W_TAB DB -124,90,149 ;word talbe using 6 bytes
 ```
 
 ให้ค่าเดียวกัน ซ้ำกันใช้ `DUP` duplicate operator `n DUP (expresion)?` n ≥ 1
 
-```wasm
+```asm
 DB 4 DUP (0) ;works like `DB 0,0,0,0`
 ```
 
 1. กรณีการไม่ให้ค่าเริ่มต้น ให้ใช้ `?` แทน expression
 
-```wasm
+```asm
 COUNT DB ?
 NUM   DW ?
 TAB   DB 49 DUP (?)
@@ -51,7 +51,7 @@ TAB   DB 49 DUP (?)
 
 1. กรณีให้ค่าเริ่มต้นเป็น string ใช้ DB (ไม่ใช้ DW) เพราะแต่ละ character ใช้ 1 byte
 
-```wasm
+```asm
 MSG DB 'MONOSODUIMGLUTAMATE'
 FNS DB 'F','E','E','N'
 ```
@@ -62,7 +62,7 @@ FNS DB 'F','E','E','N'
 
 format 
 
-```wasm
+```asm
 seg-name SEGMENT [align-type][combline-type]['class']
          ...
 seg-name ENDS
@@ -72,7 +72,7 @@ seg-name ENDS
 - `combine-type` ในการที่จะเชื่อมโยง module เข้าด้วยกัน กำหนดว่า segment ที่จะมารวมกับ segment อื่นที่มีชื่อเดียวกันจะมารวมกันอย่างไร และหากไม่ระบุ `combine-type` แสดงว่าไม่ต้องการนำไปรวมกับ segment อื่น 1. `PUBLIC` ใช้กับ code, data, or extra segment to concatenate  the segment that has a same name into 1 physical segment when it linked 2. `COMMON` ใช้กับ code, data, extra segment เพื่อให้ segment ที่มีชื่อเดียวกันใช้เนื้อที่ร่วมกัน (overlapped) 3. `STACK` ใช้กับ stack segment และทุก stack segment ต้องมี `STACK`
 - `'class'`  ใช้กำหนดลำดับการจัดกลุ่ม segment โดย segment ที่มีชื่อ class เหมือนกัน จะเก็บเรียงกันตามลำดับ ถ้าชื่อไม่เหมือนกันจะเก็บตาม linker กำหนด
 
-```wasm
+```asm
 DSEG SEMENT
 ;offset 0  2
      DW 11,12
@@ -91,7 +91,7 @@ format `ASSUME seg-reg:seg-name(,seg-reg:seg-name)*`
 
 example 1
 
-```wasm
+```asm
 SSEG SEGMENT STACK
      ...
 SSEG ENDS
@@ -104,7 +104,7 @@ CSEG ENDS
 
 example 2
 
-```wasm
+```asm
 STORAGE SEGMENT STACK
      ...
 STORAGE ENDS
@@ -129,7 +129,7 @@ format `name PROC [NEAR]?` หรือ `name PROC FAR` และปิดด้
 
 สำหรับ procedure ที่ติดธง `NEAR` นั้นจะสามารถถูกเรียกใน code segment ที่กำหนด procedure นี้และ code segment ที่ใน module อื่นที่มีชื่อ segment เหมือนกันเท่านั้น  แต่กลับกัน `FAR` นั้นจะถูกเรียกจาก code segment อื่นได้ไม่จำเป็นต้องมีชื่อเดียวกัน
 
-```wasm
+```asm
 CSEG SEGMENT
      ASSUME CS:CSEG,SS:STACK
 
@@ -142,7 +142,7 @@ CSEG ENDS
 
 ใช้คำสั่ง `CALL`  เพื่อเรียกใช้ procedure ที่กำหนดเอาไว้ และไม่ต้องกำหนดก่อนที่จะเรียกใช้
 
-```wasm
+```asm
 CSEG SEGMENT
      ASSUME CS:CSEG,SS:STACK
 
@@ -164,7 +164,7 @@ CSEG ENDS
 
 format `END main_pocedure`
 
-```wasm
+```asm
 SSEG SEGMENT STACK
      ...
 SSEG ENDS
@@ -191,7 +191,7 @@ format `PAGE [line]?[,columns]?`
 1. *lines* คือจำนวนบรรทัดในหน้า listing เป็นได้ 10-155 และมีค่าเริ่มต้นเป็น 57 
 2. *columns* คือจำนวนหลักเป็นได้ 60-132 และมีค่าเริ่มต้นเป็น 80
 
-```wasm
+```asm
 PAGE 60,70 ;60 lines and 70 columns
 ```
 
@@ -203,7 +203,7 @@ format `TITLE text`
 
 1. *text* อักขระยาวได้ 60 อักขระ
 
-```wasm
+```asm
 TITLE sample title
 ```
 
@@ -215,6 +215,6 @@ format `SUBTTL text`
 
 1. *text* อักขระยาวได้ 60 อักขระ
 
-```wasm
+```asm
 SUBTTL sample subtitle
 ```

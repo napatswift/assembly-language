@@ -29,14 +29,14 @@ Assembly Language
 
 format `(BYTE|WORD) PTR expression`
 
-```
+```asm
 NEG [SI]
 CMP [BX],37H
 ```
 
 แต่ไม่รู้ขนาดว่าเป็น byte หรือ word จึงใช้ `PTR`
 
-```
+```asm
 NEG BYTE PTR [SI]
 CMP WORD PTR [BX],37H
 CMP BYTE PTR [BX],37H
@@ -48,12 +48,12 @@ CMP BYTE PTR [BX],37H
 
  format `LEA register,memory-location`
 
-```
+```asm
 MOV BX,8
 LEA DI,TAB[BX]
 ```
 
-```
+```asm
 MOV BX,10
 MOV DI,4
 LEA SI,[BX][DI]+7

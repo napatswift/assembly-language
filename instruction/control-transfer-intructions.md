@@ -8,13 +8,13 @@
 
 format `JMP label`
 
-```
+```asm
 JMP NEXT
     ...
 NEXT: ...
 ```
 
-```
+```asm
 BACK: ...
       ...
       JMP BACK
@@ -65,27 +65,27 @@ format `J_ label`
 
 ตัวอย่าง
 
-```
+```asm
 ADD AL,CL
 JC BIG
 ```
 
-```
+```asm
 ADD BX,AX
 JO OVER
 ```
 
-```
+```asm
 SUB AL,BL
 JZ NULL
 ```
 
-```
+```asm
 DEC COUNT
 JNZ MORE
 ```
 
-```
+```asm
 CMP AL,DL
 JE EQL
 ```
@@ -101,22 +101,22 @@ JE EQL
 | dest≤src | JBE | JLE |
 | dest≥src | JAE | JGE |
 
-```
+```asm
 CMP BX,CX ;unsigned
 JA BX_MORE
 ```
 
-```
+```asm
 CMP AL,BL ;signed
 JG ...
 ```
 
-```
+```asm
 CMP CX,123 ;signed
 JLE ..
 ```
 
-```
+```asm
 	CMP BL,10
 	JAE L1 :if BL is above or equal to 10
 	...
@@ -140,7 +140,7 @@ format `LOOP label`
 
 ตัวอย่างการวนรอบ 10 ครั้ง
 
-```
+```asm
 	MOV CX,10
 NEXT: ...
 	...

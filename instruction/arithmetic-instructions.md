@@ -29,23 +29,23 @@
 
 กรณีที่จะเกิด Overflow คือทด 1 bit แต่ไม่ทดอีก bit (MSB กับ bit ถัดจาก MSB)
 
-```wasm
+```asm
 ADD AX,BX
 ```
 
-```wasm
+```asm
 ADD AX,MEM_WORD
 ```
 
-```wasm
+```asm
 ADD MEM_WORD,AX
 ```
 
-```wasm
+```asm
 ADD AL,10
 ```
 
-```wasm
+```asm
 ADD MEM_BYTE,10
 ```
 
@@ -72,12 +72,12 @@ format `MUL source`
 
 การคูณมีผลต่อ `OF` และ `CF` หาก high-order เป็น 0 ทั้งหมด `CF` และ `OF` จะเป็น `0` และหากว่า high-order ไม่เป็น 0 ทั้งหมด `CF` และ `OF` จะเป็น `1`
 
-```wasm
+```asm
 MUL CX ;CX * AX
 MUL MBYTE ;MBYTE * AL
 ```
 
-```wasm
+```asm
 MOV CL,2
 MOV AL,3
 MUL CL ;CL * AL
@@ -89,12 +89,12 @@ integer multiply signed
 
 format `IMUL source`
 
-```wasm
+```asm
 IMUL DL ;DL*AL
 IMUL MWORD ;MWORD*AX
 ```
 
-```wasm
+```asm
 MOV AX,19
 MOV CX,2
 IMUL CX
@@ -117,12 +117,12 @@ format `DIV source`
 2. ตัวหารมีขนาด 1 byte และตัวตั้งมากกว่าตัวหารอย่างน้อย (≥)256 เท่า
 3. ตัวหารมีขนาด 1 word และตัวตั้งมากกว่าตัวหารอย่างน้อย (≥)65536 เท่า
 
-```wasm
+```asm
 DIV SI ;(DX,AX)/SI
 DIVE AX;AX/MBYTE
 ```
 
-```wasm
+```asm
 MOV AX,39
 MOV CL,4
 DIV CL ;39/4
@@ -158,7 +158,7 @@ decrement destination value by 1 มีผลกับ OF, SF, ZF, AF, PF
 
 format `DEC destination`
 
-```wasm
+```asm
 MOV CL,5BH
 DEC CL ;CL=5AH
 ```
@@ -169,7 +169,7 @@ increment destination value by 1 มีผลกับ OF, SF, ZF, AF, PF
 
 format `INC destination`
 
-```wasm
+```asm
 MOV CX,010FH
 INC CX ;CX=0110H
 ```
@@ -198,14 +198,14 @@ Table: signed operand
 
 การทำงานของคำสั่ง `CMP` ในการตั้งค่าธงต่าง ๆ คือการลบ source ออกจาก destiantion แต่ค่าใน destination ไม่เปลี่ยน
 
-```wasm
+```asm
 MOV BL,32
 CMP BL,20
 ```
 
 หลังทำคำสั่งจะได้ว่า OF=0 SF=0 CF=0 ZF=0
 
-```wasm
+```asm
 MOV BX,123
 MOV AX,32
 CMP AX,BX ;32 CMP to 123

@@ -16,7 +16,7 @@ format: ชื่อ register ขนาด 8 หรือ 16 บิต
 
 segment register: none
 
-```wasm
+```asm
 MOV AX,CX
 ```
 
@@ -26,11 +26,11 @@ format: ค่าคงที่ขนาด 8 หรือ 16 บิตเป�
 
 segment register: none
 
-```wasm
+```asm
 MOV CX,59 ;59 is immediate addressing
 ```
 
-```wasm
+```asm
 MOV CL,'STRING' ;'STRING' is immediate addressing
 ```
 
@@ -42,7 +42,7 @@ segment register: `DS`
 
 เป็น offset โดย microprocessor จะคำนวณ 20-bit address เติม 0H จาก `DS` แล้วบวกกับ offset
 
-```wasm
+```asm
 MOV AX,TAB ;TAB is direct addressing
 ```
 
@@ -54,7 +54,7 @@ MOV AX,TAB ;TAB is direct addressing
 
 ทำงานกับข้อมูลใน SS: `[BP]`
 
-```wasm
+```asm
 MOV BX,2
 MOV AX,[BX] ;offset 2 in AX register
 ```
@@ -68,11 +68,11 @@ MOV AX,[BX] ;offset 2 in AX register
 
 displacement คือ ค่า 16-bit signed displacement value หรือ symbolic reference อาจเขียนได้หลายวิธี เช่น `[BP]+4`, `4[BP]`, `[BP+4]`, `NAME[BP]`
 
-```wasm
+```asm
 MOV AX,[BX]+4
 ```
 
-```wasm
+```asm
 MOV AX,TABLE[BX]
 ```
 
@@ -83,7 +83,7 @@ MOV AX,TABLE[BX]
 | [DI]+displacement | DS |
 | [SI]+displacement | DS |
 
-```wasm
+```asm
 MOV AX,WTAB[DI]
 ```
 
@@ -98,10 +98,10 @@ MOV AX,WTAB[DI]
 
 offset คือผลบวกของ base register และ index register กับ displacement (ซึ่งมีหรือไม่มีก็ได้)
 
-```wasm
+```asm
 MOV AX,[BX][SI]
 ```
 
-```wasm
+```asm
 MOV CX,NEXT[BP][SI]
 ```

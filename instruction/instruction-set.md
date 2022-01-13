@@ -12,17 +12,17 @@ format `MOV destination,source`
 
 format `PUSH source`
 
-```wasm
+```asm
 PUSH SI ;register addr
 ```
 
 เอาข้อมูลที่อยู่ใน `SI`  ไปไว้ใน stack โดยที่ข้อมูลใน `SI` ยังคงเหมือนเดิม
 
-```wasm
+```asm
 PUSH DS ;register addr
 ```
 
-```wasm
+```asm
 PUSH WTAB[BX] ;base relative addr
 ```
 
@@ -34,7 +34,7 @@ PUSH WTAB[BX] ;base relative addr
 
 ตัวอย่างการจอง stack segment ขนาด 128 words ว่าง ๆ เพื่อเก็บข้อมูล
 
-```wasm
+```asm
 STACK SEGMENT STACK 'STACK'
       DW 128 DUP (?)
 STACK ENDS
@@ -46,13 +46,13 @@ STACK ENDS
 
 format `POP destination`
 
-```wasm
+```asm
 PUSH AX
     ...
 POP AX
 ```
 
-```wasm
+```asm
 POP [SI] ;เก็บที่ DS ตำแหน่งที่ SI
 ```
 
@@ -62,7 +62,7 @@ POP [SI] ;เก็บที่ DS ตำแหน่งที่ SI
 
 format `XCHG destination,source`
 
-```wasm
+```asm
 XCHG AX,BX ;word registers
 XCHG AH,BL ;byte registers
 XCHG AX,MWORD ;register and memory location
