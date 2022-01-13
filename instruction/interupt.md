@@ -78,9 +78,15 @@ MES DB 'Hello world!'13,10,'$' ;13=carriage return, 10=line feed
 
 ตัวอย่างการแสดง 789
 
-789/10 = 78 เศษ 9
-78/10 = 7 เศษ 8
-7/10 = 0 เศษ 7
+$$
+\dfrac{789}{10} = 78\dfrac{9}{10}
+$$
+$$
+\dfrac{78}{10} = 7\dfrac{8}{10}
+$$
+$$
+\dfrac{7}{10} = \dfrac{7}{10}
+$$
 
 เปลี่ยน 9 ไปเป็น ASCII ด้วยการบวกกับ 30H + 9
 
@@ -107,7 +113,7 @@ CSEG SEGMNET
       INC BX
       LOOP FILL
 
-      MOV AX,-123
+      MOV AX,-123 ; THE NUMBER
       PUSH AX
       MOV DI,10
       CMP AX,0 ; compare with 0
@@ -122,7 +128,7 @@ CSEG SEGMNET
       CMP AX,0 ; compare with 0
       JNE NEXT ; if it's not 0 then continue loop
 
-      POP AX
+      POP AX ;get the number
       CMP AX,0
       JGE DONE ; if the number is positive
 
