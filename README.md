@@ -7,7 +7,7 @@ Assembly Language
 
 ## Units
 
-[Internal Units and Bus Unit](internal-units.md)
+[Internal Units and Bus Unit](internal-units-and-bus-unit.md)
 
 ## Intruction
 
