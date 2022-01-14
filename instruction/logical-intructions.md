@@ -8,11 +8,11 @@
 
 format `AND destination,source`
 
-ีมีผลต่อ flags `SF`, `ZF`, `PF` โดย `OF`=0 `CF`=0 `AF`=undifined
+มีผลต่อ flags `SF`, `ZF`, `PF` โดย `OF`=0 `CF`=0 `AF`=undifined
 
 
 4. NOT
 
-format `NOT destinatin`
+format `NOT destination`
 
 5. TEST ทำงานเหมือน AND แต่จะไม่เปลี่ยน destination operand และใช้เพื่อ set flags
