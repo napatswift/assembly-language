@@ -2,6 +2,11 @@
 
 คำสั่งที่ใช้ในการควบคุมการไหลของโปรแกรม แบ่งได้เป็น condtitional transfer และ unconditional transfer
 
+- [Control Transfer Instructions](#control-transfer-instructions)
+	- [Conditional Transfer](#conditional-transfer)
+	- [Conditional transfer กับ `CMP`](#conditional-transfer-กับ-cmp)
+	- [LOOP](#loop)
+
 1. JMP
 
 เป็นแบบไม่มีเงื่อนไข (unconditional transfer) และไม่มีผลต่อ flags

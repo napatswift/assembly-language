@@ -8,6 +8,12 @@ format `INT interrupt-type`
 
 interupt-type คือ 0-255 หรือ 0-FFH
 
+- [Interrupt Intruction](#interrupt-intruction)
+  - [Interrupt Return](#interrupt-return)
+  - [Interrupt Type](#interrupt-type)
+    - [INT 21H](#int-21h)
+  - [Binary to ASCII](#binary-to-ascii)
+
 ## Interrupt Return
 
 คำสั่ง `IRET` อยู่ใน interrupt routine ใช้เพื่อ return จาก interrupt โดยการ pop 3 words จาก stack แล้วไปเก็บไว้ใน IP, CS, และ flags register

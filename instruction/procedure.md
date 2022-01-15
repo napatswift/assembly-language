@@ -2,6 +2,14 @@
 
 เป็นกลุ่มของคำสั่งเพื่อทำงานบางอย่าง (คล้าย function) และคำสั่งเกี่ยวกับ procdure มีดังนี้
 
+- [Procedure](#procedure)
+  - [CALL](#call)
+  - [RET](#ret)
+  - [การส่งต่อข้อมูล](#การส่งต่อข้อมูล)
+    - [ผ่านทาง registers](#ผ่านทาง-registers)
+    - [ผ่านทาง memory location](#ผ่านทาง-memory-location)
+    - [ผ่านทาง stack](#ผ่านทาง-stack)
+
 ## CALL
 
 ใช้ในการเรียกใช้ procedure

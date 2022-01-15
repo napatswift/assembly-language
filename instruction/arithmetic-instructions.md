@@ -2,6 +2,20 @@
 
 คำสั่งทางคณิตศาสตร์กับข้อมูลชนิดตัวเลข
 
+- [Arithmetic Instructions](#arithmetic-instructions)
+  - [ADD](#add)
+  - [SUB](#sub)
+  - [MUL](#mul)
+  - [IMUL](#imul)
+  - [DIV](#div)
+  - [IDIV](#idiv)
+  - [NEG](#neg)
+  - [CBW](#cbw)
+  - [CWD](#cwd)
+  - [DEC](#dec)
+  - [INC](#inc)
+  - [CMP](#cmp)
+
 ## ADD
 
 บวกข้อมูลขนาด 8 หรือ 16 bit และนำผลบวกไปเก็บไว้ใน destination (∼`dest=dest+source`) ไม่สามารถบวกกันระหว่าง memory locations และ flags  ที่จะถูกแปลงค่าหลังจากใช้คำสั่งคือ CF, PF, AF, ZF, SF, OF

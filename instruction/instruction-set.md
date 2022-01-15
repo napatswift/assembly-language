@@ -1,5 +1,11 @@
 # Instruction Set
 
+- [Instruction Set](#instruction-set)
+  - [MOV](#mov)
+  - [PUSH](#push)
+  - [POP](#pop)
+  - [XCHG](#xchg)
+
 ## MOV
 
 ใช้คัดลอกข้อมูลจาก source operand ไปที่ destination operand ทั้งสอง operand ต้องมีขนาดเท่ากัน และทุก mode ที่ใช้เพื่อทำงานกับข้อมูลใน data segment ใช้ `DS` เป็น segment register

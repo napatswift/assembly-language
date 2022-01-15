@@ -1,5 +1,18 @@
 # Register
 
+- [Register](#register)
+    - [Data registers](#data-registers)
+    - [Pointer and index registers](#pointer-and-index-registers)
+    - [Segment registers](#segment-registers)
+    - [Segment Number and Offset](#segment-number-and-offset)
+  - [Internal Units and Bus Unit](#internal-units-and-bus-unit)
+    - [internal units](#internal-units)
+    - [bus unit](#bus-unit)
+    - [instruction unit](#instruction-unit)
+    - [execution unit (EU)](#execution-unit-eu)
+    - [instruction pointer (IP)](#instruction-pointer-ip)
+  - [Status Flags (Status Register)](#status-flags-status-register)
+
 ### Data registers
 
 |  | 7 ← 0 | 7 ← 0 |
