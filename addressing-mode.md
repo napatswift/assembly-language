@@ -2,15 +2,17 @@
 
 ในการใช้คำสั่งนั้น ทุก operand ต้องมี addressing mode เพื่อใช้บอกกับ microprocessor ว่าให้ทำงานกับข้อมูลจากที่ใด โดยแบ่งได้ 7 กลุ่ม
 
-1. register addressing
-2. immediate addressing
-3. direct addressing
-4. register indirect addressing
-5. base relative addressing
-6. direct indexed addressing
-7. base indexed addressing
+Content
+- [Addressing Mode](#addressing-mode)
+  - [Register addressing](#register-addressing)
+  - [Immediate addressing](#immediate-addressing)
+  - [Direct addressing](#direct-addressing)
+  - [Register indirect addressing](#register-indirect-addressing)
+  - [Base relative addressing](#base-relative-addressing)
+  - [Direct indexed addressing](#direct-indexed-addressing)
+  - [Base indexed addressing](#base-indexed-addressing)
 
-### Register addressing
+## Register addressing
 
 format: ชื่อ register ขนาด 8 หรือ 16 บิต
 
@@ -20,7 +22,7 @@ segment register: none
 MOV AX,CX
 ```
 
-### Immediate addressing
+## Immediate addressing
 
 format: ค่าคงที่ขนาด 8 หรือ 16 บิตเป็น source opeand
 
@@ -34,7 +36,7 @@ MOV CX,59 ;59 is immediate addressing
 MOV CL,'STRING' ;'STRING' is immediate addressing
 ```
 
-### Direct addressing
+## Direct addressing
 
 format: symbolic reference (คล้าย ๆ ชื่อตัวแปร)
 
@@ -46,7 +48,7 @@ segment register: `DS`
 MOV AX,TAB ;TAB is direct addressing
 ```
 
-### Register indirect addressing
+## Register indirect addressing
 
 ใช้กับ register ที่กำหนดเท่านั้น ใช้เป็นค่า offset
 
@@ -59,7 +61,7 @@ MOV BX,2
 MOV AX,[BX] ;offset 2 in AX register
 ```
 
-### Base relative addressing
+## Base relative addressing
 
 | operand format | segment register |
 | --- | --- |
@@ -76,7 +78,7 @@ MOV AX,[BX]+4
 MOV AX,TABLE[BX]
 ```
 
-### Direct indexed addressing
+## Direct indexed addressing
 
 | operand format | segment register |
 | --- | --- |
@@ -87,7 +89,7 @@ MOV AX,TABLE[BX]
 MOV AX,WTAB[DI]
 ```
 
-### Base indexed addressing
+## Base indexed addressing
 
 | operand format | segment register |
 | --- | --- |
