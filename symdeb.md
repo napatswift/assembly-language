@@ -55,9 +55,9 @@ format `Q`
 
 แสดงข้อมูลตัวเลขใน memory location
 
-format `D (DS|SS|ES):offset [offset]?`
+format `D (DS|SS|ES|CS):offset [offset]?`
 
-`D (DS|SS|ES):offset L byte_count`
+`D (DS|SS|ES|CS):offset L byte_count`
 
 ตัวอย่าง
 
@@ -113,13 +113,21 @@ Object filename [filename.OBJ]:
 source listing [NUL.LST]: filename.lst
 Cross-reference [NUL.CRF]:
  ...
+```
 
+ทำการลิงก์
+
+```
 > link filename
   ...
 Run File [finename.EXE]:
 List File [NUL.MAP]:
 Libraries [.LIB]:
+```
 
+ใช้ SYMDEB
+
+```
 > symdeb filename.exe
   ...
 Processor is [80286]
@@ -137,8 +145,21 @@ DS=0AA7 ES=0AA7 SS=0AB7 CS=0AC0 IP=0000 NV UP EI PL NZ NA PO NC
 0ACO:0000 B8BF0A        MOV   AX,0ABF
 ```
 
+ได้ว่า
+
 `SP=0080` เนื่องจากว่าเราจองเนื้อที่ให้จำนวน 64 words ซึ่งเท่ากับ 128 bits หรือ 80H bits ดังนั้น SP จะไปอยู่ที่บนสุดของ stack หรือที่ 80 ในกรณีนี้
 
+`NV UP EI PL NZ NA PO NC` คือ status flags
 
+`MOV AX,0ABF` คือคำสั่งถัดไป มี `segment:offset` คือ `0ACO:0000` และมี Object Code คือ `B8BF0A` มีขนาด 3 bytes ทำให้ offset ถัดไปจะ +3 หรือ เป็น 0003
 
+และถัดมาจะทำ `MOV AX,0ABF`
 
+```
+-t
+AX=0ABF BX=0000 CX=00E5 DX=0000 SP=0080 BP=0000 SI=0000 DI=0000
+DS=0AA7 ES=0AA7 SS=0AB7 CS=0AC0 IP=0003 NV UP EI PL NZ NA PO NC
+0ACO:0003 OED8         MOV   DS:AX
+```
+
+`MOV DS:AX` คือคำสั่งถัดไป

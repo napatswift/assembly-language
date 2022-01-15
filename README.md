@@ -52,3 +52,7 @@ programmer *-assembly-lang-program→* assembler *-object-prog→* liker *-run-m
 ## Addressing Mode
 
 [Addressing Mode](addressing-mode.md)
+
+## SYMDEB
+
+[Symbolic Debugger](symdeb.md)
