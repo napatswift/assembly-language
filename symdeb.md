@@ -75,7 +75,7 @@ SYMDEB multiply.exe
 D DS:10 1A
 ```
 
-# R
+## R
 
 จะแสดงข้อมูลของ 16-bit register หรือเปลี่ยนค่าใน 16-bit register [ดูที่นี่](register.md)
 
