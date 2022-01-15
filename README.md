@@ -35,10 +35,6 @@ programmer *-assembly-lang-program→* assembler *-object-prog→* liker *-run-m
 
 [Register](register.md)
 
-## Units
-
-[Internal Units and Bus Unit](internal-units-and-bus-unit.md)
-
 ## Intruction
 
 คำสั่งในภาษาแอสเซมบลี
