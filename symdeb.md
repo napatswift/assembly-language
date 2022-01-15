@@ -155,7 +155,7 @@ DS=0AA7 ES=0AA7 SS=0AB7 CS=0AC0 IP=0000 NV UP EI PL NZ NA PO NC
 
 ได้ว่า
 
-`SP=0080` เนื่องจากว่าเราจองเนื้อที่ให้จำนวน 64 words ซึ่งเท่ากับ 128 bits หรือ 80H bits ดังนั้น SP จะไปอยู่ที่บนสุดของ stack หรือที่ 80 ในกรณีนี้
+`SP=0080` เนื่องจากว่าเราจองเนื้อที่ให้ stack segment จำนวน 64 words ซึ่งเท่ากับ 128 bits หรือ 80H bits ดังนั้น SP จะไปอยู่ที่บนสุดของ stack หรือที่ 80 ในกรณีนี้
 
 `NV UP EI PL NZ NA PO NC` คือ status flags
 
