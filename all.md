@@ -1009,19 +1009,6 @@ RET 4 ;return and pop 4 bytes off stack
 
 # Directive
 
-- [Directive](#directive)
-- [Assembler directive](#assembler-directive)
-  - [Directive `DB` `DW` `DD`](#directive-db-dw-dd)
-  - [Directive `SEGMENT`, `ENDS`](#directive-segment-ends)
-  - [Directive `ASSUME`](#directive-assume)
-  - [Directive `PROC`, `ENDP`](#directive-proc-endp)
-    - [Distance attribute](#distance-attribute)
-  - [Directive `END`](#directive-end)
-- [Listing directive](#listing-directive)
-  - [Directive `PAGE`](#directive-page)
-  - [Directive `TITLE`](#directive-title)
-  - [Directive `SUBTTL`](#directive-subttl)
-
 # Assembler directive
 
 เป็นคำสั่งสำหรับ assembler ใช้เพื่อกำหนด segments, procedures, define symbols, allocate memory. ส่วนมากไม่ถูก generate เป็น object code
