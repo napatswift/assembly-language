@@ -855,7 +855,7 @@ graph TD
     l3 --> po[pipeline outputs]
 
     pc[pipeline clock]
-    pc --> l1 & l2 & l3
+    pc --- l1 & l2 & l3
 ```
 
 สําหรับ pipeline เวลาที่ใช้เพื่อผลิต first result เรียก flowthrough time เวลาที่ใช้เพื่อ produce (ผลิต) results ท่ีตามมาเรียก
