@@ -864,6 +864,21 @@ pipeline อาจแบ่งเป็น 2 categories (ประเภท) ไ
 
 ## Arithmetic-Unit Pipelining
 เช่น การคูณข้อมูลชนิด unsigned
+
+```
+            1 0 1 1 1 0 1 1     multiplicand
+         x      1 0 1 0 0 1     multiplier
+         ___________________
+            1 0 1 1 1 0 1 1
+          0 0 0 0 0 0 0 0
+        0 0 0 0 0 0 0 0
+      1 0 1 1 1 0 1 1
+    0 0 0 0 0 0 0 0
++ 1 0 1 1 1 0 1 1
+____________________________
+  1 1 1 0 1 1 1 1 1 0 0 1 1
+```
+
 ใน pipelined multiplier การ shift และการบวก เป็น processing stages (การคูณเลข binary ด้วย 2n เหมือนการ shift ไป ทางซ้าย n bits แล้วเติม 0 ทางขวา n ตัว)
 
 ## Instruction – unit Pipelining
