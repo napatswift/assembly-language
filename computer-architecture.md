@@ -70,6 +70,12 @@
   - [Orthogonality](#orthogonality)
   - [Compatibility](#compatibility)
   - [Instruction Formats](#instruction-formats)
+- [Buses, the CPU, and the I/O system](#buses-the-cpu-and-the-io-system)
+  - [Buses](#buses)
+  - [Central Processing Unit (CPU)](#central-processing-unit-cpu)
+    - [ALU](#alu)
+    - [Control Units](#control-units)
+      - [Microprogrammed Control Unit](#microprogrammed-control-unit)
 
 สถาปัตยกรรมคอมพิวเตอร์ (Computer Architecture) คือการออกแบบของคอมพิวเตอร์มี instruction set, hardware components, and system organization มี 2 ส่วนคือ
 1. Instruction-set architecture (ISA) กำหนด conputational charactistics ของ computer และ ISA จะประสบความสำเร็จได้ต้องมีหลากหลาย implementations เช่น personal computor มีหลาย specification คือมีหลายขนาด, performance, reliabilities, และ HSA) แต่มี ISA เหมือนกัน คือเข้าใจคำสั่งเหมือนกันแม้ว่า hardware จะต่างกันก็ตาม อย่างน้อยในตระกูล (computer-family architecture) เดียวกัน
@@ -511,3 +517,131 @@ instruction-set architects ต้องคํานึงถึงความ�
 โดยทั่วไปคําสั่งเริ่มต้นด้วย op code กรณีท่ี instruction set ประกอบด้วยคําสั่งที่มีความยาว และรูปแบบท่ีหลากหลาย op code กําหนด instruction size และ format
 สมมติว่าคําสั่งมีขนาด 16 bit และมี 4 bit op code, 4 bit สามารถ กําหนด 16 op code ซ่ึงน้อยเกินไป ดังนั ้นอาจใช้ 4 bit กําหนด 15 op code และ ใช้ op code F16 เพื่อบอกว่า 4 bit ถัดไปเป็น op code ดังนั้นได้ 31 op code ถ้ายังไม่พอก็สามารถทําต่อได้ ซึ่งทําให้ 16 bit instruction word มีได้ ทั้งหมด 61 op codes
 ถ้าคําสั่งมี register เป็น operand สําหรับคอมพิวเตอร์ที่มี 2N general purpose register ในคําสั่งที่มี register operand ต้องใช้ N-bit register specifier ถ้าคําสั่งใช้ 2 registers ต้องใช้ 2xN bits
+
+# Buses, the CPU, and the I/O system
+## Buses
+buses ขนส่ง ( carry ) ข้อมูลระหว่าง components ของ 1 device หรือระหว่าง subsystems สามารถแบ่งเป็น 2 กลุ่ม คือ local buses และ system buses นอกจากนี ้ยังมี expanded local buses ซึ่งรวม 2 กลุ่มไว้ด้วยกัน
+
+Bus Types
+1. Local Buses
+2. System Buses
+3. Expanded Local Buses
+
+**Local Buses** ประกอบด้วย set ของ wires ( หรือ traces ถ้าเป็นส่วน ของ circuit board ) เป็นส่วนของ device ที่ใช้งานและควบคุม bus
+ใน CPU local buses โดยทั่วไปแบ่งเป็น 3 ชนิด address bus, data bus และ control bus
+address buses เป็น unidirectional ทําหน้าที่ส่ง address จาก program counter (PC), stack register, หรือ address-computation circuitry ไปยัง memory
+data buses เป็น bidirectional อาจขนส่งข้อมูล, คําสั่ง หรือ address ระหว่าง main memory system, attached I/O devices, และ ALU
+control buses ขนส่งสัญญาณจาก control unit ไปยังส่วนประกอบ อ่ืนๆ และจากที่นั่นกลับมายัง control unit สัญญาณส่งไปเพื่อควบคุมการทํางานของ ส่วนประกอบอ่ืน (other components)
+
+**system bus** มี control circuit ของตัวเองเรียก bus controller ในแต่ละ bus controller มี arbiter ซึ่งเป็นตัวดําเนินการ (process) คําขอใน การใช้ bus
+device ที่ต้องการใช้ system bus ต้องขอความยินยอมจาก bus arbiter
+system bus โดยทั่วไปเชื่อม system components เข้าด้วยกันเช่น CPU, I/O system และ main-memory system
+
+**Expanded Local Buses** ใช้ใน microcomputer โดยเป็น local busที่ขยายการใช้งานไปนอก CPU ได้
+
+bus transfer คือ การส่งผ่านข้อมูลทาง bus ชนิดของ bus transfer เรียก bus cycle เช่น memory read, memory write, I/O read, I/O write และ interrupt
+
+clock เป็นตัวกํากับ (regulate) bus transfer states
+
+สําหรับ expanded local bus CPU ส่ง clock signals ที่ควบคุม bus, สําหรับ system bus นั้นbus controller อาจมี clock ของตัวเอง หรือ ใช้ system wide clock
+
+device ที่สามารถแข่งขัน (compete) เพื่อใช้ system หรือ expanded local bus เช่น CPU และ I/O interface เรียก bus master
+
+bus master ที่ต้องการส่งข้อมูลผ่าน system bus ต้องขออนุญาตจาก bus arbiter, device อื่น เช่น memory เป็น passive device สามารถ ตอบคําขอจาก bus master เรียกว่า slav79e
+
+device ส่งคําขอในการใช้ system หรือ expanded local bus โดยส่ง bus-request signal ไปท่ี bus arbiter ทาง bus-request line, ถ้า arbiter อนุญาต จะส่ง accept signal กลับไปทาง bus-grant line, เมื่อ arbiter อนุญาต ให้ device ใดใช้ bus, device นั้นจะเป็น bus master สําหรับ 1 bus cycle ซึ่งจะควบคุม bus ใน cycle นั้น, เฉพาะ bus master และ slave ของมัน สามารถส่งข้อมูลไปที่ bus ขั้นตอนข้างต้นเรียกว่า bus protocol
+
+ตัวอย่าง read cycle จาก expanded local bus
+1. CPU ส่งสัญญาณทาง read-control line
+2. CPU ส่ง address-enable signal และใส่ physical-memory address ใน address line ของ bus
+3. ข้อมูลจาก memory ถูกส่งทาง data bus ให้ CPU
+
+## Central Processing Unit (CPU)
+CPU ของคอมพิวเตอร์ที่ไม่ซับซ้อน (simple) ประกอบด้วย 3 ส่วนคือ register set, ALU, control unit ซึ่งติดต่อกันผ่านทาง local buses และ ติดต่อกับ storage system และ I/O system โดยใช้ system buses, local buses หรือ expanded local buses 
+### ALU
+คอมพิวเตอร์ประกอบด้วย functional units ที่ทํา arithmetic, logic และ shift ในคําสั่ง (instruction set)
+
+คอมพิวเตอร์บางตัวมี 1 functional unit คือ ALU บางตัวมีหลาย functional units ท่ีเป็นอิสระต่อกัน เช่น ALU ที่มี 2 functional units คือ shifter และ arithmetic and logic unit
+
+control bus ส่งสัญญาณจาก control unit ถึง ALU และ status bus ส่งสัญญาณ status signal จาก ALU ไปยัง control unit ข้อมูลที่ถูกส่ง ระหว่าง registers ถูกส่งทาง input และ output data buses ซ่ึงเป็น local data buses
+
+คอมพิวเตอร์บางเครื่องมี floating-point coprocessor เพื่อทํา arithmetic operations ที่มีความซับซ้อน RISC computer (Reduce-Instruction-Set Computer) มี 2 หรือ 3 functional units เช่น branch processing, arithmetic and logical operations และ floating-point operations
+
+### Control Units
+เมื่อ CPU execute คําสั่ง PC เก็บ address ของคําสั่งที่จะทําเป็นคําสั่ง ต่อไป หน้าที่ของ control unit คือ ควบคุมคอมพิวเตอร์ machine cycle
+1. fetch จาก memory คําสั่งที่จะถูก execute เป็นคําสั่งต่อไป ใส่ใน instruction register (IR) แล้ว increment PC เพื่อให้ point ไปท่ีคําสั่ง ต่อไปใน main memory
+2. decode และ execute คําสั่ง control unitส่งสัญญาณ(control signals) เพื่อควบคุมคอมพิวเตอร์, control unit อาจส่ง microorder ซ่ึงเป็น individual signal ส่งทาง dedicated control line เพื่อควบคุม component และ device
+
+ธรรมดาแล้ว control unit จะ generate sets ของ microorders set ของ microorders generate โดย control unit ใน 1 ครั้ง (at one time) เรียก microinstruction
+
+เมื่อคอมพิวเตอร์ execute machine instruction ใน instruction set, control unit จะส่งออก (issues) sequence ของ microinstructions, sequence ที่ implement คําสั่งภาษาเครื่อง 1 คําสั่ง คือ microprogram
+
+เช่นถ้า accumulator machine execute คําสั่ง ADD, control unit จะส่งออก microinstructions เพ่ือหา address ของ memory operand, อ่านข้อมูลจาก memory, ส่งข้อมูลไปที่ ALU, ส่ง operand ตัวที่ 2 ไปท่ี ALU, บวกข้อมูล 2 จํานวน, นําผลบวกจาก ALU ไปเก็บไว้ใน accumulator
+
+Control Unit แบ่งเป็น 2 ชนิด คือ
+1. Microprogrammed Control Unit
+2. Conventional Control Unit
+
+#### Microprogrammed Control Unit
+control unit เริ่มต้นด้วยการ fetch คําสั่งจาก memory แล้วเปลี่ยน คําสั่งเป็น series ของ microinstructions โดยใช้ microprogram translator ซึ่งเป็น device ที่ทํา table look-up เพ่ือแปล op code ของ คําสั่งเป็น microinstruction address
+
+microinstruction processor ใช้ address เพื่อ fetch sequence of microinstructions จาก memory ของตัวเอง หรือจาก main memory, หลัง fetch microinstruction, processor จะส่ง microorders ทาง control bus lines
+
+ทั้ง microprogram translator และ microinstruction processor เป็นส่วนของ control unit
+
+ส่วนประกอบของ microprogrammed control unit ได้แก่
+- IR ซึ่งเก็บ machine instruction ที่จะถูก execute
+- control store อาจอยู่ใน ROM เก็บ microprograms สําหรับ machine instructions, machine startup และ สําหรับ interrupt processing
+- address-computation circuitry กําหนด address ใน control store ของ microinstruction คําสั่งถัดไป
+- microprogram counter ( μPC ) เก็บ address ของ micro instruction คําสั่งถัดไป
+- microinstruction buffer เก็บ microinstructions ซึ่งถูก นํามาจาก control store โดย control86unit
+- microinstruction decoder เป็นตัว generate และ issue microorder ขึ้นกับ microinstruction และ op code ของคําสั่งที่กําลัง execute
+- sequencer ทําหน้าที่ synchronize การทํางานขององค์ประกอบของ control unit. sequencer เป็นหัวใจของ control unit โดยมี mode การทํางาน ใน 2 mode คือ ordinary operation และ machine start up
+
+```mermaid
+flowchart LR
+    oo[ordinary operation]
+    msu[machine start up]
+```
+
+Ordinary Operation
+
+sequencer ผลิต (generate) control signals ซึ่งกํากับ (regulate) control unit
+control signals คือ microorders ซึ่งทําให้เกิดการทํางานดังนี ้
+a. เก็บ address ใน μPC โดย load address จาก address-computation circuitry หรือ increment value ใน μPC อาจมีการ
+clear microinstruction buffer
+b. เริ่ม control-store read สําหรับ addressed microinstruction และนําไปเก็บใน microinstruction buffer
+c. microinstruction decoder issue microinstruction
+
+sequencer ผลิตสัญญาณซึ่งเป็นตัวเริ่ม sequence ของการทํางาน ข้างต้น เมื่อ control unit เสร็จการทํางาน microprogram สําหรับหนึ่ง machine instruction จะ fetch machine instruction คําสั่งถัดไปจาก main memory โดย micro-instruction decoder จะ issue microorder เพื่อ load machine instruction ไว้ใน IR
+
+Machine Start up
+
+ระหว่าง machine start up control unit จะให้ค่าเร่ิมต้น (initialize) registers บางตัว แล้วจะ load hardware-generated address ใน PC ( ไม่ใช่ μPC) และเริ่ม execute
+ในบางเครื่อง hardware-loaded address คือ reset vector ซึ่ง เก็บ address ของคําสั่งแรกที่ต้องทําหลังเปิดเครื่อง โดย load reset vector ใน
+
+```mermaid
+flowchart LR
+      subgraph PC
+      rf[Reset vector]
+      end
+
+      subgraph mm[main memory]
+      rf --> fi[first instruction]
+      end
+```
+
+ในบางเครื่อง hardware-generated address point ไปท่ี reset vector address โดย control unit ต้อง fetch reset vector address เพื่อใส่ใน PC
+
+```mermaid
+flowchart LR
+      subgraph PC
+      rva[Reset-vector Address]
+      end
+
+      subgraph mm[Main Memory]
+      rva --> rv[Reset Vector]
+      rv --> fi[First Instruction]
+      end
+```
+
