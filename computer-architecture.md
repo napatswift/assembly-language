@@ -76,6 +76,28 @@
     - [ALU](#alu)
     - [Control Units](#control-units)
       - [Microprogrammed Control Unit](#microprogrammed-control-unit)
+- [Organization of Microprograms in the Contril Store](#organization-of-microprograms-in-the-contril-store)
+  - [1. Microprogrammed Control Units](#1-microprogrammed-control-units)
+  - [2. Conventional Control Units](#2-conventional-control-units)
+- [Exception-processing Hardware and Instructions](#exception-processing-hardware-and-instructions)
+- [Exception Initiation](#exception-initiation)
+- [I/O System](#io-system)
+  - [1. CPU-controlled I/O](#1-cpu-controlled-io)
+    - [a. multiprogramming operating systems](#a-multiprogramming-operating-systems)
+    - [b. multiported storage systems](#b-multiported-storage-systems)
+    - [c. I/O processors](#c-io-processors)
+  - [2. DMA I/O](#2-dma-io)
+  - [3. Memory – mapped I/O](#3-memory--mapped-io)
+- [Pipelining and RISCs](#pipelining-and-riscs)
+  - [Pipelining](#pipelining)
+  - [Arithmetic-Unit Pipelining](#arithmetic-unit-pipelining)
+  - [Instruction – unit Pipelining](#instruction--unit-pipelining)
+  - [Scheduling Functional Units](#scheduling-functional-units)
+  - [RISC](#risc)
+  - [Historical Perspective](#historical-perspective-1)
+- [RISC - CISC](#risc---cisc)
+  - [CISC](#cisc)
+  - [RISC](#risc-1)
 
 สถาปัตยกรรมคอมพิวเตอร์ (Computer Architecture) คือการออกแบบของคอมพิวเตอร์มี instruction set, hardware components, and system organization มี 2 ส่วนคือ
 1. Instruction-set architecture (ISA) กำหนด conputational charactistics ของ computer และ ISA จะประสบความสำเร็จได้ต้องมีหลากหลาย implementations เช่น personal computor มีหลาย specification คือมีหลายขนาด, performance, reliabilities, และ HSA) แต่มี ISA เหมือนกัน คือเข้าใจคำสั่งเหมือนกันแม้ว่า hardware จะต่างกันก็ตาม อย่างน้อยในตระกูล (computer-family architecture) เดียวกัน
@@ -645,3 +667,267 @@ flowchart LR
       end
 ```
 
+# Organization of Microprograms in the Contril Store
+
+วิธีการหนึ่งที่ทําได้คือใส่ microinstruction ใน memory ตามลําดับ แต่ละ machine instruction มี sequence ของ microinstructions ของตัวเองใน control store
+
+```
+ _______________________________________
+|             control store             |
+|    |-----------------------------|    |
+| A0 |     microcode op code 0     |    |
+|    |-----------------------------|    |
+| A1 |     microcode op code 0     |    |
+|    |-----------------------------|    |
+|    |              :              |    |
+|    |-----------------------------|    |
+| AIF| microcode instruction fetch |    |
+|    |-----------------------------|    |
+|    |              :              |    |
+|    |-----------------------------|    |  
+|_______________________________________|
+```
+
+หลังจากท่ี control unit fetch machine instruction จาก main memory และใส่ใน instruction register (IR) แล้วต้อง generate entry-point address สําหรับ op code นั้น (address ของ microinstruction คําสั่งแรกสําหรับ op code นั้น) การ generate entry-point address เป็นหน้าที่ของ address-computation circuitry หลังจากนั้น sequencer จะเพิ่ม µPC เพื่อได้ address ของ microinstruction ถัดไป
+
+หลังจบการ execute microinstruction ใน micro-program, sequencer ต้อง execute microcode สําหรับ fetch sequence ดังนั้น ต้องไปที่ address AIF ใน control store (branch to address AIF)
+
+microinstructions อาจเป็นแบบ nonbranching หรือ branching
+
+สําหรับ branching microinstruction sequencer กับ address-computation circuitry ใช้ control signals กําหนดโดย branch microinstruction เพ่ือกําหนด address ของคําสั่งถัดไป
+
+เพื่อควบคุมการ branch ทุก microinstruction generate หนึ่ง microorder ให้ sequencer วิเคราะห์, microorder จะบอก sequencer ว่า microinstruction นี้เป็น branching microinstruction หรือไม่, ถ้าเป็น branching microinstruction sequencer จะให้ address-computation circuitry generate address และส่งสัญญาณให้ µPC รับ address จาก address-computation circuitry, แต่ถ้า microinstruction เป็น nonbranching, sequencer จะส่งสัญญาณให้ µPC เพื่อ increment ข้อมูลใน µPC
+
+หลังจาก instruction fetch, address-computation circuitry ต้อง decode op code ของ machine instruction และ generate entry-point address ของ microinstruction สําหรับ op code นั้น
+
+ถ้าเป็น microprogram branching instruction address-computation circuitry ต้อง generate address ของ microinstruction ถัดไป ขึ้นกับ address ท่ีได้จาก internal address bus และสัญญาณที่ได้จาก microinstruction decoder, branch microinstructions จะส่ง control microorders ไปท่ี sequencer เพื่อให้ sequencer generate control signals เพื่อบอก address-computation circuitry ให้ทําข้อใดข้อหนึ่งต่อไปนี ้
+
+- ใช้ op code เพื่อ generate next microinstruction
+- ใช้ address จาก address bus เพื่อ generate branch-target address
+
+microprogrammed control units แบ่งเป็ น 2 ประเภท
+- horizontal
+- vertical
+
+## 1. Microprogrammed Control Units
+สําหรับ horizontal control แต่ละ bit ใน microinstruction เหมือนกับ (correspond to) microorder แต่ละตัว โดยแต่ละ bit ควบคุม bus หนึ่ง bus หรืออาจะเป็น gate ในเครื่อง ดังนั้นไม่จําเป็นต้องมี decoder, ใน control unit ประเภทนี ้ microinstructions จะกว้างมาก อาจใช้หลายร้อย bits ดังนั้นจีงเรียกว่า horizontal
+
+สําหรับ vertical control, microorders ถูก code เป็น microinstruction bits ใน specific fields ( field ท่ีเฉพาะเจาะจง ) เช่น microinstruction อาจใช้ 4-bit field เพื่อควบคุม 16 ALU operations หรืออาจใช้ 5-bit field เพื่อเลือกหนึ่งใน 32 registers, โดย decoders ซึ่งอาจอยู่ใน microinstruction decoder หรือใน CPU จะ decode bits ใน field เหล่านี ้เพ่ือจะได้ microorders, control unit ประเภทนี ้มี microinstructions ซึ่งใช้ few dozen bits
+
+ในทางปฏิบัติ microprogrammed control unit อาจจะอยู่ระหว่าง horizontal และ vertical
+
+## 2. Conventional Control Units
+เหมือน microprogrammed control units คือ เมื่อ execute machine instruction, conventional control unit จะ issue sequence ของ microinstructions ต่างกันตรงที่ logic gates เป็นตัว generate microorders ทั้งหมด conventional control unit อาจเรียกว่า hard-wired control unit
+
+การออกแบบ control unit อาจประกอบด้วย control unit ทั้ง 2 ชนิด คือ บาง key-instructions มี hard-wired control และคําสั่งอื่นๆใช้ microcode เช่นใช้ conventional control สําหรับคําสั่งคํานวณแบบธรรมดา คําสั่ง logical คําสั่ง shift และ memory access แล้วใช้ microcode สําหรับ exception handling, decimal arithmetic, character
+instructions
+
+ถึงแม้ internal circuitry ใน conventional control unit แตกต่างจาก microprogrammed control unit อย่างมาก แต่ได้ผลลัพธ์ เหมือนกันคือได้ sequence ของ control signals เพื่อทํางานกับ circuit ของ เครื่อง
+
+# Exception-processing Hardware and Instructions
+exceptions เป็น branches ซึ่งถูกเริ่มโดย special exception-processing hardware
+exception แบ่งเป็น 2 ชนิดคือ interrupts ซ่ึงเกิดจาก events external to program และ traps ซึ่งเกิดจาก program events
+
+interrupts เช่น I/O interrupt ซึ่งบอก operating system ว่า I/O device เสร็จการทํางานหรือต้องการ service
+
+console interrupt เป็นวิธีการที่ operator (user) ใช้เพื่อหยุดการ ทํางานของโปรแกรมชั่วคราว (halt)
+
+traps เช่น arithmetic overflow, illegal op codes ในคําสั่ง และ memory-protection violation; multiprogramming systems ต้องมี trap เพื่อป้องกันโปรแกรมหนึ่งจากการแก้ไขข้อมูลของอีกโปรแกรม หนึ่ง, คอมพิวเตอร์ส่วนใหญ่มีคําสั่งเรียก SUPERVISOR CALL หรือ INTERRUPT ซึ่งอนุญาตให้โปรแกรมทําให้เกิด traps
+
+exceptions ถูกดําเนินการโดย exception handlers, เรียก traps handlers สําหรับ traps และ interrupt handlers สําหรับ interrupts สําหรับ CPU traps และ interrupts เหมือนกัน
+
+ขณะโปรแกรมกําลังทํางาน program context ประกอบด้วย 2 ส่วนคือ processor context และ memory context
+
+processor context คือ state ของ CPU’s program-visible registers ซึ่งเป็น registers ที่มีผลต่อการทํางานของโปรแกรม รวมทั ้ง PC, processor status bits
+
+memory context คือ state ของ program’s memory
+
+ระหว่าง exception processing ความรับผิดชอบของ hardware คือรักษา processor context เท่าที่ทําได้
+
+เมื่อ CPU เร่ิมการทํา exception exception-processing hardware จะ save processor context information เช่น PC, processor status flags และ อ่ืนๆ โดย push ลงใน stack หรือใน main memory เสร็จแล้วจะ load PC ด้วย entry-point address ทําให้ branch ไปท่ี exception handler
+
+เมื่อ exception handler จบการทํางาน จะส่ง control กลับไปท่ี interrupted program โดย restore processor context เท่าที่ทําได้ และทํา RETURN FROM INTERRUPT instruction เพ่ือกลับไปทํา โปรแกรมเดิมต่อ
+
+# Exception Initiation
+เมื่อ device ร้องขอ interrupt จะส่ง interrupt-request signal ทาง dedicated interrupt-request line, interrupt-request signal จะ set interrupt-code flag เพื่อบอกว่า device ไหนต้องการ interrupt หลังจากนั ้น exception hardware จะ set interrupt-pending flip-flop เพื่อส่งสัญญาณไปท่ี control unit ให้เริ่มทํา exception
+เพื่อส่ง control ไปท่ี interrupt handler ที่ถูกต้อง exception-processing hardware กําหนด address สําหรับแต่ละ exception โดย control unit จะ load address นั้นใน PC
+control unit เริ่ม trap และ interrupt โดยใช้วิธีเดียวกัน
+ถ้าเป็น microprogrammed control unit หลังทํา microinstruction คําสั่งสุดท้ายในแต่ละ microprogram จะเป็น branch ไปท่ี fetch microcode, เพื่อทํา interrupt control unit จะทํา conditional branch เพื่อ fetch microcode โดย condition เป็น test สําหรับ interrupt-pending signal, เมื่อ interrupt-pending signal เป็นจริง, address-computation circuitry จะแก้ไข branch address และ branch ไปท่ี interrupt-initiation microcode แทนที่ fetch microcode
+control unit ทํา trap เหมือน interrupt เช่น เมื่อเกิด arithmetic error จะ branch ไปท่ี microcode เพื่อเริ่ม trap processing
+เมื่อจบการทํางานใน exception handler จะทํา คําสั่ง RETURN FROM INTERRUPT ซึ่งจะ restore registers ที่ถูก save โดย exception-initiation hardware แล้วจะ clear interrupt pending
+flip-flop
+
+# I/O System
+I/O System เป็น set ของ I/O devices ในระบบ รวมทั้ง physical I/O devices และ I/O interface devices
+physical I/O devices คือ device ที่ทํา I/O เช่น printers, video displays, consoles
+I/O interface devices ติดต่อสื่อสาร (communicate) ระหว่าง CPU กับ physical I/O devices ดังนั้น จะ control physical I/O devices และแยก (isolate) CPU จาก specific characteristics ของ device เหล่านั้น
+input devices เริ่มจาก operator consoles, card และ paper-tape readers, card และ paper-tape punches ปัจจุบันมี input devices หลากหลาย เช่น terminals, keyboards (สําหรับ personal computer), computer mouses, track balls, scanners
+
+มี 3 เทคนิคท่ีใช้ในการ process input และ output ได้แก่
+1. CPU-controlled I/O
+2. direct-memory-access(DMA) I/O
+3. memory-mapped I/O
+
+## 1. CPU-controlled I/O
+CPU ควบคุม I/O devices โดยตรง ในคอมพิวเตอร์ยุคแรก โดยใช้คําสั่ง I/O อย่างง่ายเช่น WRITE A TO DEVICE N หรือ READ A FROM DEVICE N (A หมายถึงregister และ N หมายถึง I/O device number) โดยคําสั่งจะ transfer ทีละ 1 byte หรือ 1 word เพื่อให้ใช้ CPU อย่างมีประสิทธิภาพและเนื่องจาก I/O devices ทํางานได้ช้าเมื่อเทียบกับการทํางานของ CPU ดังนั้นจึงมีแนวความคิดในการแก้ปัญหาโดย
+
+- a. multiprogramming operating systems
+- b. multiported storage systems
+- c. I/O processors
+
+วัตถุประสงค์คือเพื่อให้ CPU execute โปรแกรม 100% ของเวลา
+
+### a. multiprogramming operating systems
+จะแบ่ง memory เป็นส่วนๆ (partitions), load แต่ละ program ในแต่ละส่วนของ memory เมื่อ program ต้องการข้อมูลจาก external device (input) หรือต้องการส่งข้อมูลไปที่ external device (output) จะ ร้องขอ (request) I/O service จาก operating system โดยอาจ generate trap ด้วย SUPERVISOR CALL instruction, operating system จะพักการทํางานของโปรแกรม, เริ่ม I/O operation, และ เร่ิมทําการ execute อีกโปรแกรมหนึ่ง, หลัง I/O processor service I/O request แล้ว operating system จะพักการทํางานของโปรแกรมที่ 2 แล้วกลับไปทําโปรแกรมท่ี 1 ต่อ
+
+### b. multiported storage systems
+ในคอมพิวเตอร์ยุคแรก เฉพาะ CPU สามารถ access memory หลังจากนั้นมีการออกแบบ hardware ที่อนุญาตให้มากกว่า 1 device สามารถ access storage system เดียวกันได้ memory-port controller คือ switching circuit ที่รับคําร้อง ในการใช้ memory จาก device, จัดลําดับคําร้อง แล้วเชื่อมต่อ memory กับ device ที่มี priority สูงสุด, เมื่อ CPU หรือ I/O controller ต้องการ access memory จะส่ง service-request signal ไปท่ี memory-port controller แล้วต้องรอ service-grant signal arbiter ใน memory-port controller เป็นตัวตัดสินว่า device ไหนจะได้รับอนุญาตให้ access memory โดยตัดสินจาก
+- fixed by device number เลือก device ที่มี device number น้อยสุด
+- round robin โดย memory-port controller เลือก device ถัดไปตามลําดับ
+- time multiplexed โดยให้แต่ละ device fixed time slot เช่นถ้ามี 5 devices แต่ละ device ได้ 1/5 ของเวลา
+
+### c. I/O processors
+เป็น special I/O interfaces ที่รวม devices เรียก DMA channels และ peripheral processing units (PPUs) สามารถควบคุม I/O devices โดยปราศจากการแทรกแซงจาก CPU
+
+## 2. DMA I/O
+hardware device ที่ควบคุมการส่งข้อมูลไปและจาก main memory เรียก direct-memory-access (DMA) controllers
+ในแต่ละ data transfer CPU ส่งไปท่ี DMA controller address สําหรับ block ของ data, จํานวน bytes เพื่อ transfer, และ ทิศทางในการ transfer (input หรือ output) DMA controller จะทําการ transfer โดยไม่มี CPU มาแทรกแซง และจะ interrupt CPU เมื่อทําเสร็จ
+ถ้าเป็น single-bus system เช่นใน microcomputers DMA controller เป็น bus master ระหว่างการ transfer, เมื่อ DMA controller เป็น bus master CPU ต้องรอเพื่อใช้ bus ดังนั้น DMA controller ขโมย bus cycles จาก CPU
+cycle stealing หมายถึงการที่ I/O devices ทําให้ CPU ต้องรอการ ใช้ resource เช่น system bus หรือ storage system
+ในบาง system, DMA controller มี independent port ไป ยัง memory
+บางระบบ เช่น IBM ใช้ simple I/O processors เรียก channels ซึ่งทํา DMA I/O ภายใต้การควบคุมของ channel program
+DMA controllers และ channels ท่ีใช้ systems buses ร่วมกับ CPU และ device อ่ืนๆ มีหลาย mode ในการทํางาน เช่น single-cycle DMA โดย DMA controller หรือ channel จะร้องขอการใช้ bus สําหรับแต่ละ item ที่ต้องการ transfer, ใน burst-mode DMA DMA controller จะใช้ bus จนกว่าจะจบการ transfer ของทั ้ง block ข้อมูล
+บางระบบเช่น CDC computer ใช้ I/O devices เรียก peripheral-processing units (PPUs) ซึ่งทํา DMA I/O ด้วย, PPUs เหมือนเป็น simple computer ซึ่งมี local memory ของตัวเอง PPUs อาจ ทํา data formatting, conversions ระหว่าง data types
+
+## 3. Memory – mapped I/O
+คอมพิวเตอร์อาจมี I/O instructions สําหรับควบคุม I/O devices
+โดยจะ generate สัญญาณเพื่อแยกระหว่าง I/O operation กับ memory-
+access operation
+เมื่อทําคําสั่ง I/O จะมีการ generate address ของ I/O device ซึ่ง
+ถูกใส่ใน address bus เนื่องจาก address อาจเป็น I/O device address
+processor ที่ใช้ memory-mapped I/O ไม่ต้องใช้คําสั่ง I/O แบบพิเศษ (special I/O instructions) การ store ข้อมูลไปท่ี output port จะส่งข้อมูลไปท่ี I/O interface device และการ load ข้อมูลจาก input port จะรับข้อมูลจาก interface device (CPU ไม่สามารถแยกแยะ ระหว่าง memory access และ access ไปท่ี I/O interface device)
+การ store ข้อมูลไปท่ี control port ทําโดยส่ง I/O command ไป ที่ interface device และ load operation จาก status port ได้รับ status information จาก status port ดังนั ้นการ output ข้อมูลทําโดย CPU ส่งข้อมูลไปที่ output-port address ที่ถูกต้อง และการอ่านข้อมูล CPU จะ load ข้อมูลจาก input-port address ที่ถูกต้อง (correct input-
+port address)
+CPU-controlled I/O และ memory-mapped I/O ไม่เป็น exclusive concepts คือคอมพิวเตอร์ที่มี I/O instructions อาจใช้ memory-mapped I/O ด้วย
+
+# Pipelining and RISCs
+pipelining เป็นเทคนิคในการทําให้คอมพิวเตอร์ทํางานเร็วขึ ้น การใช้ parallelism เป็นวัตถุประสงค์หลักในการออกแบบคอมพิวเตอร์ parallelism อาจมีได้หลายรูปแบบเช่น concurrent execution (การ execute พร้อมกัน) ของคําสั่งโดยใช้ pipelined functional units, concurrent execution ของคําสั่งโดยใช้ multiple functional units
+
+## Pipelining
+process ทุกๆ process สามารถแบ่งเป็น stages (ช่วง)
+serial processing หมายถึงการ execute ทุก stages ของหนึ่ง process ก่อนเริ่ม stage แรกของ process ถัดไป ดังนั ้นต้องจบ process หนึ่งก่อนเริ่ม process ใหม่
+คอมพิวเตอร์ส่วนมาก execute stage เดิมหลายครั ้งต่อเนื่องกัน (same staged process) แทนท่ีจะ execute แต่ละ stage ใน process serially สามารถทําให้เร็วขึ ้นโดยใช้ pipelining เทคนิค โดยการ overlap ( ทํา ให้ทับกัน ) stages ของ repeating process
+process ที่แบ่งเป็น 3 stages
+
+```mermaid
+stateDiagram-v2
+    direction LR
+    [*] --> Stage1
+
+    state Tp {
+        state Tg { Stage1 }
+        Tg --> Stage2
+        Stage2 --> Stage3
+    }
+
+    Stage3 --> [*]
+```
+
+Tp = N*Tg โดย N คือ จํานวน stage ใน process
+
+pipelined execution of the same sequence of three processes
+![](mermaid-diagram-20220315202046.png)
+total pipelined processing time = Tp + 2*Tg
+
+pipelined unit ประกอบด้วยหลาย processing stations แต่ละ station ทํา stage ที่แตกต่างกันใน total process, เมื่อ pipelined unit ทํา sequence ของ computations แต่ละ station ทํา step เดิมซํ ้าๆ แต่ ทํากับ element (องค์ประกอบ) ที่แตกต่างกันใน sequence ดังนั้น processor ทํา computations ที่แตกต่างกันพร้อมกัน (concurrently)
+คอมพิวเตอร์มี special circuit เพื่อ process (ดําเนินการ) แต่ละ stage โดยใช้ register ความเร็วสูง (fast register) เรียก latches เพ่ือเก็บ operands ในแต่ละ stage ซึ่งก็คือผลลัพธ์ของ stage ก่อนหน้าโดยมี clock ทํา หน้าที่ synchronize stage ใน pipeline
+pipeline หรือ pipe ประกอบด้วย circuit ทั้งหมดสําหรับแต่ละ stage รวมทั ้ง latches ระหว่าง stage
+องค์ประกอบของ pipeline อย่างง่าย
+
+```mermaid
+graph TD
+    pi[pipeline inputs]
+    pi --> l1[latch]
+    l1 --> fshc[first stage hardware  circuit]
+    fshc --> l2[latch]
+    l2 --> sshc[second stage hardware  circuit]
+    sshc --> l3[latch]
+    l3 --> po[pipeline outputs]
+
+    pc[pipeline clock]
+    pc --> l1 & l2 & l3
+```
+
+สําหรับ pipeline เวลาที่ใช้เพื่อผลิต first result เรียก flowthrough time เวลาที่ใช้เพื่อ produce (ผลิต) results ท่ีตามมาเรียก
+clock-cycle time
+pipeline อาจแบ่งเป็น 2 categories (ประเภท) ได้แก่ arithmetic-unit pipeline และ instruction-unit pipeline
+
+## Arithmetic-Unit Pipelining
+เช่น การคูณข้อมูลชนิด unsigned
+ใน pipelined multiplier การ shift และการบวก เป็น processing stages (การคูณเลข binary ด้วย 2n เหมือนการ shift ไป ทางซ้าย n bits แล้วเติม 0 ทางขวา n ตัว)
+
+## Instruction – unit Pipelining
+การ execute คําสั่งประกอบด้วยหลาย logical parts ได้แก่
+1. CPU หา address ของคําสั่ง และ fetch จาก memory
+2. control unit วิเคราะห์ op code หา address ของ operand และ address ของ result
+
+Instruction execution time ประกอบด้วย
+1. address เวลาที่ใช้ในการ generate address ของคําสั่ง
+2. wait เวลาที่ใช้ในการ fetch คําสั่งจาก memory
+3. decode เวลาที่ใช้ในการ decode op code
+4. address เวลาที่ใช้ในการ generate address ของ operand
+5. wait เวลาที่ใช้ในการ fetch operand จาก memory
+6. execute เวลาที่ใช้ในการ execute คําสั่ง
+7. wait เวลาที่ใช้เพื่อเก็บผลลัพธ์
+
+event ที่ทําให้ instruction-unit pipeline ทํางานได้ช้าลง เช่น
+
+1. interinstruction dependencies ตัวอย่างคือ คําสั่ง 2 คําสั่ง ขึ ้นไป write ข้อมูลไปท่ี register เดียวกัน หรือ คําสั่ง write ข้อมูลไปที่ register ที่เก็บข้อมูลที่เป็น source ของอีกคําสั่ง
+2. instruction-unit อาจต้อง execute คําสั่งบางคําสั่งตามลําดับ เช่น conditional branch ถ้าต้องมีการ branch อาจจะต้อง flush pipeline (ลบคําสั่งที่อยู่ต่อจาก conditional branch ใน pipeline) แล้ว เติม pipeline ด้วยคําสั่ง เร่ิมจาก branch-target address เวลาที่ใช้ในการ refill pipeline หลัง conditional branch ตรง ตามเง่ือนไขเรียก branch penalty 
+
+โดยทั่วไป pipeline ที่มี stage มากกว่าต้องมี circuit มากขึ ้นในการ จัดการ architectural และ machine-organization interlocks, ตัวอย่างเช่น คําสั่ง STORE ซึ่งwrite ไปท่ี address ของคําสั่งที่อยู่ใน pipeline ถ้าไม่มี hardware test ที่เพียงพอ CPU อาจแก้ไขคําสั่งใน memory แต่ไม่ แก้ไขคําสั่งใน pipeline, ถ้า ISA อนุญาตให้มีการแก้ไขคําสั่งใน memory ได้ control unit ต้องตรวจสอบได้ แล้วต้องแก้ไขคําสั่งใน pipeline หรือ flush และ refill pipeline
+
+## Scheduling Functional Units
+เป้าหมายของ instruction pipeline คือใช้เวลาน้อยที่สุดในการ issue instruction, เมื่อคอมพิวเตอร์มีหลาย functional units control unit ต้อง issue (แจกจ่าย) คําสั่ง (instruction) ให้ functional unit โดยเร็วท่ีสุด เพื่อให้ functional unit ทํา operation
+instruction issue ประกอบด้วยการ reserve functional unit, ส่ง op code ให้ functional unit, reserve result register โดยก่อน control unit แจกจ่ายคําสั่งต้องแน่ใจว่า functional unit นั ้นว่างอยู่และไม่มี data dependency ระหว่างคําสั่งนั ้นและ คําสั่งที่กําลัง execute อยู่ เช่น control unit แจกจ่าย 2 คําสั่งที่มี result register เดียวกัน ในกรณีนี้เกิด data dependency และคําสั่งแรกต้อง store ผลลัพธ์ก่อน
+
+## RISC
+RISC (Reduced Instruction Set Computers) architecture มี
+คุณสมบัติดังนี ้
+1. มีคําสั่งง่ายๆ
+2. คําสั่งมี uniform length
+3. คําสั่งมี few instruction formats
+4. คําสั่งใช้ few addressing modes
+5. architecture เป็น load-and-store architecture (เฉพาะLOAD และ STORE instruction เข้าถึง memory คําสั่งอื่นเป็น register-to-register instruction) 
+6. ISA มี data type หลักๆ 2 type คือ integer และ floating point
+
+## Historical Perspective
+คอมพิวเตอร์ในยุคแรกใช้ conventional control units เนื่องจากไม่ มี technology สําหรับ microprogrammed control
+หลังจากนั้นmicroprogrammed control unit มีการใช้งาน แพร่หลายเนื่องจาก
+- สามารถ implement คําสั่งที่ซับซ้อน (complex) ได้
+- ราคาถูกกว่า conventional hard-wired control unit
+- เพิ่มคําสั่งหรือแก้ไขคําสั่งเดิมได้ง่าย
+microprogramming ทําให้สามารถออกแบบคําสั่งที่มีความซับซ้อนได้ง่ายและเนื่องจาก imcroprograms เก็บใน high speed memories ดังนั้น control unit สามารถ access control code ได้เร็วกว่าการ access main memory
+
+คําสั่ง ADD INCREMENT (R2) <- (R2) + R5; R2 <- R2 +1 ทําการบวกข้อมูลใน register R5 กับข้อมูลใน memory ที่ address อยู่ใน register R2 แล้วเพิ่มข้อมูลใน register R2 โดยคําสั่งข้างต้นเป็น **CISC** (Complex-instruction set computers) instruction ซ่ึงเหมือนกับ การทํางานของ 4 RISC instructions
+
+| instruction | CISC |
+| ---- | --- |
+|LOAD  | R3 <- (R2) |
+|ADD   | R3 <- R3+R5 |
+|STORE | (R2) <- R3 |
+|INCREMENT | R2 <- R2 + 1 |
+
+# RISC - CISC
+
+## CISC
+CISC (Complex Instruction Set Computers) architecture
+- Instruction set ของคําสั่งที่มีความซับซ้อนกว่า ไม่ได้ทําให้ราคาของการ implement เพิ่มขึ ้น
+- upward compatibility สามารถ implement ใน microcode ได้ง่ายกว่า
+- complex instruction set ทําให้การลอกเลียนแบบยากขึ ้น
+
+## RISC
+RISC (Reduced Instruction Set Computers) architecture
+- basic hardware ง่ายกว่าของ CISC ทําให้ราคาถูกกว่า
+- ง่ายในการ compile สําหรับ RISC architecture ( ง่ายกว่าของ CISC architecture )
+- ง่ายกว่าในการเพิ่มการทํางานแบบ parallel ใน control unit ของ RISC
