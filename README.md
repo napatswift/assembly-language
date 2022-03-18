@@ -17,10 +17,6 @@ Assembly Language
     - [บันทึกลง file (write a file)](#บันทึกลง-file-write-a-file)
     - [อ่านจาก file (read a file)](#อ่านจาก-file-read-a-file)
     - [ลบ file (delete a file)](#ลบ-file-delete-a-file)
-  - [External Reference Directives](#external-reference-directives)
-    - [directive PUBLIC](#directive-public)
-    - [directive INCLUDE](#directive-include)
-    - [directive EXTRN](#directive-extrn)
   - [SYMDEB](#symdeb)
 
 ## MASM
@@ -211,27 +207,6 @@ FNAME DB 'C:\DATA\PROG.DAT', 0
     INT 21H
     JC  WRONG ; error
 ```
-
-## External Reference Directives
-directive PUBLIC, EXTRN, INCLUDE ใช้เพื่อ link modules เข้าด้วยกัน
-
-### directive PUBLIC
-รูปแบบ `PUBLIC symbol[,…]`
-ใช้เพื่อให้ module อื่น สามารถใช้ symbol ใน directive PUBLIC ได้ symbol อาจเป็น symbolic reference,ชื่อprocedure
-### directive INCLUDE
-รูปแบบ `INCLUDE filespec ;filename.ext`
-ใช้เพื่อนำ source file มารวมกับ current source file เวลา Assemble โปรแกรม
-### directive EXTRN
-รูปแบบ `EXTRN name:type[,…]`
-ใช้คู่กับ PUBLIC เพื่อบอก linker ว่าต้องการใช้ name ซึ่ง defined ใน module อื่น name ต้องอยู่ใน PUBLIC ของ module อื่น
-  - ถ้า name เป็น symbol ใน data หรือ extra segment type อาจเป็น BYTE, WORD หรือ DWORD
-  - ถ้า name เป็นชื่อ procedure type อาจเป็น NEAR หรือ FAR
-
-เวลาจะ link กับ module อื่น ต้องใส่ชื่อ procedure ไว้ใน directive PUBLIC เพื่อให้ procedure อื่นเรียกใช้ได้
-
-global data หรือ procedure ที่ procedure นี้จะ เรียกใช้ต้องใส่ใน directive EXTRN
-
-ใส่ directive PUBLIC, EXTRN, INCLUDE นอก segment
 
 ## SYMDEB
 
