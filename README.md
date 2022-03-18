@@ -13,7 +13,6 @@ Assembly Language
   - [File handling](#file-handling)
     - [การเปิดแฟ้ม (Open a file)](#การเปิดแฟ้ม-open-a-file)
     - [สร้างแฟ้ม (creat a file)](#สร้างแฟ้ม-creat-a-file)
-    - [หลักการทํางานของ](#หลักการทํางานของ)
     - [การปิดแฟ้ม (close a file)](#การปิดแฟ้ม-close-a-file)
     - [บันทึกลง file (write a file)](#บันทึกลง-file-write-a-file)
     - [อ่านจาก file (read a file)](#อ่านจาก-file-read-a-file)
@@ -117,8 +116,7 @@ FNAME  DB 'FILENAME.FN',0
 
 ถ้า `CF = 1` แสดงว่ามีข้อผิดพลาด และใน `AX` จะมีรหัสข้อผิดพลาด
 
-### หลักการทํางานของ
-routine คือ `AX` จะมี file handle ต่อมา file จะถูกสร้างโดยมี read/write access code ถ้า `CF` = 1 แสดงว่า เกิด error `AX` จะมี error code
+หลักการทํางานของ routine คือ `AX` จะมี file handle ต่อมา file จะถูกสร้างโดยมี read/write access code ถ้า `CF` = 1 แสดงว่า เกิด error `AX` จะมี error code
 
 ```asm
 HANDLE DW ?
